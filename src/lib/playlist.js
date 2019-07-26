@@ -1,3 +1,5 @@
+const openWeatherApi = require('../../server/api/openWeather')
+
 /**
  * @module lib/playlist
  * @method [lib/playlist] get
@@ -6,9 +8,13 @@
  * @returns {object} Object containing the city, weather and playlist
  */
 const get = async (city) => {
+  const weatherData = await openWeatherApi.getWeather(city)
+  const temperature = weatherData.main.temp
+  city = weatherData.name
+
   const playlist = {
     city,
-    weather: {},
+    temperature,
     playlist: []
   }
 
