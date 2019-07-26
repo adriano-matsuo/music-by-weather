@@ -1,0 +1,17 @@
+{
+  "DEFAULT": {
+    "status": 500,
+    "body": {
+      "code": 1,
+      "message": "Error while processing request"
+    }
+  },
+  "CITY_NOT_FOUND": {
+    "status": 404,
+    "body": {
+      "code": 2,
+      "message": "City not found"
+    }
+  }
+}
+  
