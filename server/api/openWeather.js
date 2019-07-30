@@ -3,12 +3,12 @@ const { openWeatherApi } = require('../../config')
 const logger = require('../../server/utils/logger')
 
 const getWeather = async (city) => {
-  const { host, key } = openWeatherApi
+  const { key } = openWeatherApi
 
   try {
     return new Promise((resolve, reject) => {
       request({
-        url: `${host}/data/2.5/weather?q=${city},BR&units=metric&appid=${key}`,
+        url: `http://api.openweathermap.org/data/2.5/weather?q=${city},BR&units=metric&appid=${key}`,
         method: 'GET'
       }, (err, res, body) => {
         if (err || res.statusCode === 500) {
