@@ -1,4 +1,6 @@
 const openWeatherApi = require('../../server/api/openWeather')
+const spotifyApi = require('../../server/api/spotify')
+const helper = require('../utils/helper')
 
 /**
  * @module lib/playlist
@@ -10,12 +12,16 @@ const openWeatherApi = require('../../server/api/openWeather')
 const get = async (city) => {
   const weatherData = await openWeatherApi.getWeather(city)
   const temperature = weatherData.main.temp
-  city = weatherData.name
+  const genre = helper.getGenre(temperature)
+
+  const recommendations = await spotifyApi.getRecommendations(genre)
+  const tracks = helper.parseTracks(recommendations.tracks)
 
   const playlist = {
-    city,
+    city: weatherData.name,
     temperature,
-    playlist: []
+    genre,
+    tracks
   }
 
   return playlist

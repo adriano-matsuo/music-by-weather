@@ -1,7 +1,10 @@
 const config = {
   openWeatherApi: {
-    host: process.env.OPENWEATHER_API_HOST,
     key: process.env.OPENWEATHER_API_KEY
+  },
+  spotifyApi: {
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET
   }
 }
 
