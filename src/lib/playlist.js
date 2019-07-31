@@ -1,6 +1,38 @@
 const openWeatherApi = require('../../server/api/openWeather')
 const spotifyApi = require('../../server/api/spotify')
 const helper = require('../utils/helper')
+const redis = require('../../server/redis')
+const { redis: config } = require('../../config')
+
+const getWeather = async (city) => {
+  const redisClient = redis.client
+  const KEY = `WEATHER_${city}`
+
+  let weather = await redisClient.getAsync(KEY)
+  if (weather) {
+    return JSON.parse(weather)
+  }
+
+  weather = await openWeatherApi.getWeather(city)
+  redisClient.setAsync(KEY, JSON.stringify(weather), 'EX', config.openWeather.timeout)
+
+  return weather
+}
+
+const getTracks = async (genre) => {
+  const redisClient = redis.client
+  const KEY = `TRACKS_${genre}`
+
+  let tracks = await redisClient.getAsync(KEY)
+  if (tracks) {
+    return JSON.parse(tracks)
+  }
+
+  tracks = await spotifyApi.getRecommendations(genre)
+  redisClient.setAsync(KEY, JSON.stringify(tracks), 'EX', config.spotify.timeout)
+
+  return tracks
+}
 
 /**
  * @module lib/playlist
@@ -10,15 +42,14 @@ const helper = require('../utils/helper')
  * @returns {object} Object containing the city, weather and playlist
  */
 const get = async (city) => {
-  const weatherData = await openWeatherApi.getWeather(city)
-  const temperature = weatherData.main.temp
+  const weather = await getWeather(city)
+  const temperature = weather.main.temp
   const genre = helper.getGenre(temperature)
-
-  const recommendations = await spotifyApi.getRecommendations(genre)
-  const tracks = helper.parseTracks(recommendations.tracks)
+  let tracks = await getTracks(genre)
+  tracks = helper.parseTracks(tracks)
 
   const playlist = {
-    city: weatherData.name,
+    city: weather.name,
     temperature,
     genre,
     tracks

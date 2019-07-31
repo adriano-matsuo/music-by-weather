@@ -50,7 +50,8 @@ const getRecommendations = async (genre) => {
           return reject(new Error('DEFAULT'))
         }
 
-        return resolve(JSON.parse(body))
+        const tracks = JSON.parse(body)
+        return resolve(tracks.tracks)
       })
     })
   } catch (e) {
