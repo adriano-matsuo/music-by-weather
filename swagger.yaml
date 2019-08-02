@@ -1,0 +1,143 @@
+swagger: "2.0"
+schemes:
+  - http
+  - https
+host: music-by-weather.herokuapp.com
+basePath: /
+info:
+  description: |
+
+    # Swagger
+    Teste a API no navegador [aqui](swagger-ui/)
+
+  version: "0.0.1"
+  title: Music by Weather
+externalDocs:
+  description: Github repository
+  url: "https://github.com/adriano-matsuo/music-by-weather/"
+produces:
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: health
+    description: Informação sobre a saúde da aplicação
+
+
+paths:
+  /health:
+    get:
+      tags:
+        - health
+      description: Retorna informações sobre a saúde da API
+      operationId: Health Check
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Informações sobre a saúde da API
+          schema:
+            type: boolean
+          examples:
+            application/json:
+              true
+        500:
+          description: "Unexpected error: api is unhealthy"
+          schema:
+            $ref: "#/definitions/Error500"
+          examples:
+            application/json:
+              code: 1
+              message: Unexpected error
+
+  /playlist/:city:
+    get:
+      tags:
+        - playlist
+      operationId: Retorna uma playlist com base na temperatura de uma cidade
+      description: Retorna uma playlist com base na temperatura de uma cidade
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: city
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: Retorna uma playlist com base na temperatura de uma cidade
+          schema:
+            $ref: '#/definitions/Playlist'
+          examples:
+            application/json:
+              city: "Campinas"
+              temperature: 20.71
+              genre: "rock"
+              tracks:
+                - album: "Toxicity"
+                  artist: "System Of A Down"
+                  name: "Toxicity"
+                - album: "Cross Road"
+                  artist: "Bon Jovi"
+                  name: "Always"
+        404:
+          description: Cidade não encontrada
+          schema:
+            $ref: '#/definitions/Error404'
+        500:
+          description: Erro inesperado
+          schema:
+            $ref: '#/definitions/Error500'
+
+definitions:
+  Playlist:
+    type: object
+    properties:
+      city:
+        type: string
+        description: a cidade informada
+      temperature:
+        type: number
+        description: a temperatura atual da cidade
+      genre:
+        type: string
+        description: gênero de músicas da playlist
+      tracks:
+        type: array
+        description: uma lista contendo a playlist
+        items:
+         type: object
+         properties:
+          album:
+            type: string
+            description: album da música
+          artist:
+            type: string
+            description: artista
+          name:
+            type: string
+            description: nome da música
+        
+  Error404:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: código de erro sequencial (0, 1, 2...)
+      message:
+        type: string
+        description: uma simples descrição caso o recurso não seja encontrado.
+
+  Error500:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: código de erro sequencial (0, 1, 2...)
+      message:
+        type: string
+        description: uma simples descrição para erro interno, como "Erro ao processar a requisição", "Erro de comunicação com o banco de dados"
