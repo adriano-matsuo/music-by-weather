@@ -14,6 +14,10 @@ const getWeather = async (city) => {
   }
 
   weather = await openWeatherApi.getWeather(city)
+  if (!weather) {
+    throw new Error('CITY_NOT_FOUND')
+  }
+
   redisClient.setAsync(KEY, JSON.stringify(weather), 'EX', config.openWeather.timeout)
 
   return weather
