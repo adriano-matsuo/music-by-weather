@@ -17,7 +17,7 @@ const getWeather = async (city) => {
         }
 
         if (res.statusCode === 404) {
-          return reject(new Error('CITY_NOT_FOUND'))
+          return reject(false)
         }
 
         return resolve(JSON.parse(body))
