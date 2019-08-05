@@ -11,7 +11,7 @@ Para identificar a temperatura atual de uma cidade, utilizamos a API do [OpenWea
 Para sugerir uma playlist, foi utilizada a API do [Spotify](https://developer.spotify.com). As informações são armazenadas em cache no Redis com o tempo de expiração de 20 minutos por gênero. Além disso, dos 50 resultados da API, retornamos apenas 10 de forma aleatória. Então, por mais que os resultados estejam em cache, o resultado será sempre único.
 
 ### URL
-GET https://music-by-weather.herokuapp.com/playlist/{cidade}
+GET https://music-by-weather.herokuapp.com/playlist/campinas
 
 ### Topologia
 ![Music by Weather Overview](docs/flowchart.png)
